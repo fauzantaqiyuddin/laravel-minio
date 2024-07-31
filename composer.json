@@ -1,5 +1,5 @@
 {
-    "name": "fauzantaqiyuddin/laravel-miniio",
+    "name": "fauzantaqiyuddin/laravel-minio",
     "description": "A Laravel package to upload files to Minio Object Storage",
     "type": "library",
     "license": "MIT",
