@@ -1,99 +1,85 @@
 # Laravel Minio Storage
 
-Development By : MSTD IT Kalbe Farma - FTN
+A Laravel package to upload files to Minio Object Storage.
 
-Tech Stack
+## Installation
 
-- Laravel 10.x Latest
-- PostGreSQL
-- Bootstrap 5 Latest
-- Ajax DataTables
-- E-Mail Reminder
+1. Install the package via Composer:
 
-Documents
+    ```bash
+    composer require fauzantaqiyuddin/laravel-minio
+    ```
 
-- UAT Number : x
+2. Publish the configuration file:
 
-## Badges
+    ```bash
+    php artisan vendor:publish --provider="Fauzantaqiyuddin\LaravelMinio\MiniojanServiceProvider" 
+    ```
 
-Add badges from somewhere like: [shields.io](https://shields.io/)
+## Configuration
 
-[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+1. Add the following environment variables to your `.env` file:
 
-## 🚀 About Me
+    ```env
+    MINIO_ENDPOINT=http://localhost:9000
+    MINIO_ACCESS_KEY=your-access-key
+    MINIO_SECRET_KEY=your-secret-key
+    MINIO_REGION=us-east-1
+    ```
 
-Contact Us For Partner Project
+2. The configuration file `config/miniojan.php` will be published to your Laravel project. You can customize it as needed.
 
-## Contributing
+## Usage
 
-Contributions are always welcome!
+### Uploading Files
 
-See `contributing.md` for ways to get started.
+To upload files to Minio, use the `upload` method.
 
-Please adhere to this project's `code of conduct`.
+#### Example Controller
 
-## Running Program
+```php
+namespace App\Http\Controllers;
 
-To run code, run the following command
+use Illuminate\Http\Request;
+use Fauzantaqiyuddin\LaravelMinioStorage\Miniojan;
 
-- Add New ENV Laravel
+class MinioController extends Controller
+{
+    protected $miniojan;
 
-```bash
-  cp .env.example .env
-```
+    public function __construct(Miniojan $miniojan)
+    {
+        $this->miniojan = $miniojan;
+    }
 
-- Edit For DB Username and Password
+    public function uploadFile(Request $request)
+    {
+        $file = $request->file('your_file_field');
+        $directory = 'your-directory';
+        $bucket = 'your-bucket-name';
 
-```bash
-DB_CONNECTION=pgsql
-DB_HOST=127.0.0.1
-DB_PORT=5432
-DB_DATABASE=laravel
-DB_USERNAME=root
-DB_PASSWORD=
-```
+        $response = $this->miniojan->upload($bucket, $directory, $file->getPathname());
 
-- Install Composer For Library
+        return response()->json(['message' => $response]);
+    }
 
-```bash
-  composer install
-```
+    public function getFileUrl($fileName)
+    {
+        $directory = 'your-directory';
+        $bucket = 'your-bucket-name';
 
-- Add New Key For Laravel
+        $url = $this->miniojan->getUrl($bucket, $directory, $fileName);
 
-```bash
-  php artisan key:generate
-```
+        return response()->json(['url' => $url]);
+    }
 
-- Edit For Email Server
+    public function deleteFile($fileName)
+    {
+        $directory = 'your-directory';
+        $bucket = 'your-bucket-name';
 
-```bash
-MAIL_MAILER=smtp
-MAIL_HOST=mailpit
-MAIL_PORT=1025
-MAIL_USERNAME=null
-MAIL_PASSWORD=null
-MAIL_ENCRYPTION=null
-MAIL_FROM_ADDRESS="hello@example.com"
-MAIL_FROM_NAME="${APP_NAME}"
-```
+        $response = $this->miniojan->delete($bucket, $directory, $fileName);
 
-- Create Migrations And Seeder
-
-```bash
-  php artisan migrate --seed
-```
-
-- Running For Localhost
-
-```bash
-  php artisan serve
-```
-
-- Running For Server ( Please Pointing Folder Public Laravel )
-
-## Support
-
-For support,
-email : fauzan.taqiyuddin@kalbe.co.id
-Number Ext : 404
+        return response()->json(['message' => $response]);
+    }
+}

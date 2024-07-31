@@ -40,4 +40,31 @@ class Miniojan
             return 'Upload failed: ' . $e->getMessage();
         }
     }
+
+    public function getUrl($bucket, $dir, $fileName)
+    {
+        try {
+            $objectName = $dir . '/' . $fileName;
+            $url = $this->client->getObjectUrl($bucket, $objectName);
+            return $url;
+        } catch (Exception $e) {
+            return 'Get URL failed: ' . $e->getMessage();
+        }
+    }
+
+    public function delete($bucket, $dir, $fileName)
+    {
+        try {
+            $objectName = $dir . '/' . $fileName;
+
+            $result = $this->client->deleteObject([
+                'Bucket' => $bucket,
+                'Key'    => $objectName,
+            ]);
+
+            return "File successfully deleted from Minio: {$objectName}";
+        } catch (Exception $e) {
+            return 'Delete failed: ' . $e->getMessage();
+        }
+    }
 }
