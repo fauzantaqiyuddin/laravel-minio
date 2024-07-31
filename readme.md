@@ -1,3 +1,7 @@
+
+![Logo](https://i.ibb.co.com/WVtCgRz/Black-Minimal-Business-Personal-Profile-Linkedin-Banner.png)
+
+
 # Laravel Minio Storage
 
 A Laravel package to upload files to Minio Object Storage.
@@ -21,10 +25,11 @@ A Laravel package to upload files to Minio Object Storage.
 1. Add the following environment variables to your `.env` file:
 
     ```env
-    MINIO_ENDPOINT=http://localhost:9000
+    MINIO_REGION=us-east-1
+    MINIO_ENDPOINT=http://127.0.0.1:9000
     MINIO_ACCESS_KEY=your-access-key
     MINIO_SECRET_KEY=your-secret-key
-    MINIO_REGION=us-east-1
+    MINIO_BUCKET=your-bucket-name
     ```
 
 2. The configuration file `config/miniojan.php` will be published to your Laravel project. You can customize it as needed.
@@ -38,48 +43,63 @@ To upload files to Minio, use the `upload` method.
 #### Example Controller
 
 ```php
+<?php
+
 namespace App\Http\Controllers;
 
+use Fauzantaqiyuddin\LaravelMinio\Facades\Miniojan;
 use Illuminate\Http\Request;
-use Fauzantaqiyuddin\LaravelMinioStorage\Miniojan;
 
-class MinioController extends Controller
+class HomeController extends Controller
 {
-    protected $miniojan;
-
-    public function __construct(Miniojan $miniojan)
-    {
-        $this->miniojan = $miniojan;
-    }
-
     public function uploadFile(Request $request)
     {
-        $file = $request->file('your_file_field');
-        $directory = 'your-directory';
-        $bucket = 'your-bucket-name';
+        $request->validate([
+            'berkas' => 'required|image',
+            'directory' => 'required|string',
+        ]);
 
-        $response = $this->miniojan->upload($bucket, $directory, $file->getPathname());
+        $file = $request->file('berkas'); 
+        $directory = $request->input('directory');
+    
+        $path = $file->store('temp');
+        $filePath = storage_path('app/' . $path); 
 
-        return response()->json(['message' => $response]);
+        // Upload file ke MinIO
+        $response = Miniojan::upload($directory, $filePath);
+        unlink($filePath);
+        return back()->with('message', $response);
     }
 
-    public function getFileUrl($fileName)
+    public function getFileUrl(Request $request)
     {
-        $directory = 'your-directory';
-        $bucket = 'your-bucket-name';
+        $request->validate([
+            'file_name' => 'required|string',
+            'directory' => 'required|string',
+            'bucket' => 'required|string',
+        ]);
 
-        $url = $this->miniojan->getUrl($bucket, $directory, $fileName);
+        $fileName = $request->input('file_name');
+        $directory = $request->input('directory');
 
-        return response()->json(['url' => $url]);
+        $url = Miniojan::getUrl($directory, $fileName);
+
+        return back()->with('url', $url);
     }
 
-    public function deleteFile($fileName)
+    public function deleteFile(Request $request)
     {
-        $directory = 'your-directory';
-        $bucket = 'your-bucket-name';
+        $request->validate([
+            'file_name' => 'required|string',
+            'directory' => 'required|string',
+            'bucket' => 'required|string',
+        ]);
 
-        $response = $this->miniojan->delete($bucket, $directory, $fileName);
+        $fileName = $request->input('file_name');
+        $directory = $request->input('directory');
 
-        return response()->json(['message' => $response]);
+        $response = Miniojan::delete($directory, $fileName);
+
+        return back()->with('message', $response);
     }
 }
