@@ -1,6 +1,6 @@
 <?php
 
-namespace Miniojan;
+namespace Fauzantaqiyuddin\LaravelMinio;
 
 use Illuminate\Support\ServiceProvider;
 

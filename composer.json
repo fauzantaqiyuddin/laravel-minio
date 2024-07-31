@@ -10,7 +10,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Miniojan\\": "src/"
+            "Fauzantaqiyuddin\\LaravelMinio\\": "src/"
         }
     },
     "authors": [
@@ -22,7 +22,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Miniojan\\MiniojanServiceProvider"
+                "Fauzantaqiyuddin\\LaravelMinio\\MinioStorageServiceProvider"
             ]
         }
     },
