@@ -2,35 +2,40 @@
 
 namespace Miniojan;
 
-use Minio\MinioClient;
+use Aws\S3\S3Client;
 use Exception;
 
 class Miniojan
 {
     private $client;
 
-    public function __construct($endpoint, $accessKey, $secretKey)
+    public function __construct($endpoint, $accessKey, $secretKey, $region = 'us-east-1')
     {
-        $this->client = new MinioClient($endpoint, $accessKey, $secretKey);
+        $this->client = new S3Client([
+            'version'     => 'latest',
+            'region'      => $region,
+            'endpoint'    => $endpoint,
+            'use_path_style_endpoint' => true,
+            'credentials' => [
+                'key'    => $accessKey,
+                'secret' => $secretKey,
+            ],
+        ]);
     }
 
-    public function upload($dir, $file)
+    public function upload($bucket, $dir, $file)
     {
         try {
-            $bucket = 'your-bucket-name'; // Ganti dengan nama bucket Anda
             $objectName = $dir . '/' . basename($file);
 
-            // Baca file
-            $fileStream = fopen($file, 'rb');
-            if (!$fileStream) {
-                throw new Exception('File not found: ' . $file);
-            }
-
             // Upload ke Minio
-            $this->client->putObject($bucket, $objectName, $fileStream, filesize($file));
-            fclose($fileStream);
+            $result = $this->client->putObject([
+                'Bucket' => $bucket,
+                'Key'    => $objectName,
+                'SourceFile' => $file,
+            ]);
 
-            return "File successfully uploaded to Minio: $objectName";
+            return "File successfully uploaded to Minio: {$result['ObjectURL']}";
         } catch (Exception $e) {
             return 'Upload failed: ' . $e->getMessage();
         }
