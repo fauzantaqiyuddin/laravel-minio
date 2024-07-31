@@ -7,29 +7,27 @@ use Exception;
 
 class Miniojan
 {
-    private $client;
-
-    public function __construct($endpoint, $accessKey, $secretKey, $region = 'us-east-1')
+    private static function getClient()
     {
-        $this->client = new S3Client([
+        return new S3Client([
             'version'     => 'latest',
-            'region'      => $region,
-            'endpoint'    => $endpoint,
+            'region'      => config('minio.region'),
+            'endpoint'    => config('minio.endpoint'),
             'use_path_style_endpoint' => true,
             'credentials' => [
-                'key'    => $accessKey,
-                'secret' => $secretKey,
+                'key'    => config('minio.access_key'),
+                'secret' => config('minio.secret_key'),
             ],
         ]);
     }
 
-    public function upload($bucket, $dir, $file)
+    public static function upload($bucket, $dir, $file)
     {
         try {
+            $client = self::getClient();
             $objectName = $dir . '/' . basename($file);
 
-            // Upload ke Minio
-            $result = $this->client->putObject([
+            $result = $client->putObject([
                 'Bucket' => $bucket,
                 'Key'    => $objectName,
                 'SourceFile' => $file,
@@ -41,23 +39,25 @@ class Miniojan
         }
     }
 
-    public function getUrl($bucket, $dir, $fileName)
+    public static function getUrl($bucket, $dir, $fileName)
     {
         try {
+            $client = self::getClient();
             $objectName = $dir . '/' . $fileName;
-            $url = $this->client->getObjectUrl($bucket, $objectName);
+            $url = $client->getObjectUrl($bucket, $objectName);
             return $url;
         } catch (Exception $e) {
             return 'Get URL failed: ' . $e->getMessage();
         }
     }
 
-    public function delete($bucket, $dir, $fileName)
+    public static function delete($bucket, $dir, $fileName)
     {
         try {
+            $client = self::getClient();
             $objectName = $dir . '/' . $fileName;
 
-            $result = $this->client->deleteObject([
+            $result = $client->deleteObject([
                 'Bucket' => $bucket,
                 'Key'    => $objectName,
             ]);
