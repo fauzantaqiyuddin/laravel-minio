@@ -1,0 +1,30 @@
+{
+    "name": "fauzantaqiyuddin/laravel-miniio",
+    "description": "A Laravel package to upload files to Minio Object Storage",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^5.6|^7.0|^8.0|^8.1|^8.2",
+        "minio/minio-php": "^3.0",
+        "illuminate/support": "^5.1|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Miniojan\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Fauzan Taqiyuddin",
+            "email": "kelasweekend.id@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Miniojan\\MiniojanServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable"
+}
