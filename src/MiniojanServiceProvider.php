@@ -37,7 +37,7 @@ class MiniojanServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/minio.php', 'minio');
+        $this->mergeConfigFrom(__DIR__ . '/../config/miniojan.php', 'minio');
 
         $this->app->singleton('miniojan', function () {
             return new Miniojan();
@@ -47,7 +47,7 @@ class MiniojanServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/../config/minio.php' => config_path('minio.php'),
+            __DIR__ . '/../config/miniojan.php' => config_path('minio.php'),
         ], 'config');
     }
 }
