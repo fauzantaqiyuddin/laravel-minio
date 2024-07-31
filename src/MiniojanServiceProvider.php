@@ -15,7 +15,8 @@ class MiniojanServiceProvider extends ServiceProvider
                 config('miniojan.endpoint'),
                 config('miniojan.access_key'),
                 config('miniojan.secret_key'),
-                config('miniojan.region')
+                config('miniojan.region'),
+                config('miniojan.bucket')
             );
         });
     }

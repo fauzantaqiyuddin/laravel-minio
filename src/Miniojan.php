@@ -21,14 +21,14 @@ class Miniojan
         ]);
     }
 
-    public static function upload($bucket, $dir, $file)
+    public static function upload($dir, $file)
     {
         try {
             $client = self::getClient();
             $objectName = $dir . '/' . basename($file);
 
             $result = $client->putObject([
-                'Bucket' => $bucket,
+                'Bucket' => config('minio.bucket'),
                 'Key'    => $objectName,
                 'SourceFile' => $file,
             ]);
@@ -39,26 +39,26 @@ class Miniojan
         }
     }
 
-    public static function getUrl($bucket, $dir, $fileName)
+    public static function getUrl($dir, $fileName)
     {
         try {
             $client = self::getClient();
             $objectName = $dir . '/' . $fileName;
-            $url = $client->getObjectUrl($bucket, $objectName);
+            $url = $client->getObjectUrl(config('minio.bucket'), $objectName);
             return $url;
         } catch (Exception $e) {
             return 'Get URL failed: ' . $e->getMessage();
         }
     }
 
-    public static function delete($bucket, $dir, $fileName)
+    public static function delete($dir, $fileName)
     {
         try {
             $client = self::getClient();
             $objectName = $dir . '/' . $fileName;
 
             $result = $client->deleteObject([
-                'Bucket' => $bucket,
+                'Bucket' => config('minio.bucket'),
                 'Key'    => $objectName,
             ]);
 
