@@ -22,7 +22,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Fauzantaqiyuddin\\LaravelMinio\\MinioStorageServiceProvider"
+                "Fauzantaqiyuddin\\LaravelMinio\\MiniojanServiceProvider"
             ]
         }
     },
