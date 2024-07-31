@@ -9,12 +9,12 @@ class ComposerStaticInit3fe028c5e1e193f0b59444cbbf00a3f8
     public static $prefixLengthsPsr4 = array (
         'F' => 
         array (
-            'Fauzantaqiyuddin\\LaravelMiniio\\' => 31,
+            'Fauzantaqiyuddin\\LaravelMinio\\' => 30,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Fauzantaqiyuddin\\LaravelMiniio\\' => 
+        'Fauzantaqiyuddin\\LaravelMinio\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),

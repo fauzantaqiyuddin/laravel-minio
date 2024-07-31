@@ -6,5 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Fauzantaqiyuddin\\LaravelMiniio\\' => array($baseDir . '/src'),
+    'Fauzantaqiyuddin\\LaravelMinio\\' => array($baseDir . '/src'),
 );
