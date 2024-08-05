@@ -33,7 +33,7 @@ class Miniojan
                 'SourceFile' => $file,
             ]);
 
-            return "File successfully uploaded to Minio: {$result['ObjectURL']}";
+            return $result['ObjectURL'];
         } catch (Exception $e) {
             return 'Upload failed: ' . $e->getMessage();
         }
